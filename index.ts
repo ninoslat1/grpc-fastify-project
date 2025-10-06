@@ -1,53 +1,20 @@
-import Fastify from "fastify";
-import grpc from "@grpc/grpc-js";
-import protoLoader from "@grpc/proto-loader";
-import path from "path";
-import { fileURLToPath } from "url";
-import type { GreeterServer, HelloRequest, HelloReply } from "./src/types/hello.js";
+import { Application } from "./src/Application";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PROTO_PATH = path.join(__dirname, "./proto/hello.proto");
+const app = new Application();
 
-// Load proto definition
-const packageDef = protoLoader.loadSync(PROTO_PATH);
-const grpcObject = grpc.loadPackageDefinition(packageDef) as any;
-const helloPackage = grpcObject.hello;
-
-// Implementasi gRPC
-const sayHello: grpc.handleUnaryCall<HelloRequest, HelloReply> = (call, callback) => {
-  const name = call.request.name;
-  callback(null, { message: `Hello, ${name}!` });
-};
-
-// Buat Fastify instance
-const fastify = Fastify({ logger: true });
-
-// Endpoint HTTP
-fastify.get("/", async () => ({ status: "gRPC Server Running 🚀" }));
-
-// Jalankan gRPC server
-function startGrpcServer() {
-  const server = new grpc.Server();
-
-  if (helloPackage?.Greeter?.service) {
-    server.addService(helloPackage.Greeter.service, { SayHello: sayHello } as GreeterServer);
-  } else {
-    fastify.log.error("Failed to load gRPC service definition");
-    return;
+async function main() {
+  try {
+    await app.start();
+  } catch (error) {
+    console.error("Application error:", error);
+    process.exit(1);
   }
-
-  const address = "0.0.0.0:50051";
-  server.bindAsync(address, grpc.ServerCredentials.createInsecure(), (err, port) => {
-    if(err){
-      fastify.log.error(err)
-    }
-    fastify.log.info(`gRPC server running at ${address}`);
-  });
 }
 
-async function start() {
-  await fastify.listen({ port: 3000 });
-  startGrpcServer();
-}
+process.on("SIGINT", async () => {
+  console.log("Shutting down gracefully...");
+  await app.shutdown();
+  process.exit(0);
+});
 
-start();
+main();
