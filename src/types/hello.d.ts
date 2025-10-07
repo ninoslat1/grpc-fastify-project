@@ -8,13 +8,19 @@ export interface HelloReply {
   message: string;
 }
 
+export interface FullnameHelloRequest {
+  firstName: string;
+  lastName: string;
+}
+
 export interface GreeterServer extends grpc.UntypedServiceImplementation {
   SayHello: grpc.handleUnaryCall<HelloRequest, HelloReply>;
+  SayGoodbye: grpc.handleUnaryCall<HelloRequest, HelloReply>;
+  SayFullname: grpc.handleUnaryCall<FullnameHelloRequest, HelloReply>
 }
 
 export interface GreeterClient extends grpc.Client {
-  SayHello(
-    request: HelloRequest,
-    callback: (error: grpc.ServiceError | null, response: HelloReply) => void
-  ): grpc.ClientUnaryCall;
+  SayHello(request: HelloRequest, callback: (error: grpc.ServiceError | null, response: HelloReply) => void): grpc.ClientUnaryCall;
+  SayGoodbye(request: HelloRequest, callback: (error: grpc.ServiceError | null, response: HelloReply) => void): grpc.ClientUnaryCall;
+  SayFullname(request: HelloRequest, callback: (error: grpc.ServiceError | null, response: HelloReply) => void): grpc.ClientUnaryCall;
 }
