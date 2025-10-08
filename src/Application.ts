@@ -1,6 +1,7 @@
 import { GrpcServiceRegistry } from "./grpc/GrpcServiceRegistry";
 import { GrpcServer } from "./grpc/server";
 import { GreeterGrpcService } from "./grpc/services/GreeterGrpcService";
+import { UserGrpcService } from "./grpc/services/UserGrpcService";
 import { HttpServer } from "./http/server";
 
 export class Application {
@@ -14,6 +15,7 @@ export class Application {
     // Register all gRPC services
     registry.registerAll([
       new GreeterGrpcService(),
+      new UserGrpcService()
     //   new UserGrpcService(),
     //   new ProductGrpcService(),
       // Add more services here

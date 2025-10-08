@@ -16,7 +16,7 @@ export class GrpcServiceRegistry {
   loadServicesIntoServer(server: grpc.Server): void {
     for (const service of this.services) {
       try {
-        const packageDef = protoLoader.loadSync(service.getProtoPath());
+        const packageDef = protoLoader.loadSync(service.getProtoPath(), {keepCase: true});
         const grpcObject = grpc.loadPackageDefinition(packageDef) as any;
         const packageObj = grpcObject[service.getPackageName()];
 
@@ -28,10 +28,7 @@ export class GrpcServiceRegistry {
 
         const serviceDefinition = packageObj[service.getServiceName()].service;
         server.addService(serviceDefinition, service.getHandlers());
-        
-        console.log(`✓ Registered gRPC service: ${service.getServiceName()}`);
       } catch (error) {
-        console.error(`✗ Failed to register service ${service.getServiceName()}:`, error);
         throw error;
       }
     }

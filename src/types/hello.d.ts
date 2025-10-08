@@ -9,8 +9,8 @@ export interface HelloReply {
 }
 
 export interface FullnameHelloRequest {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
 }
 
 export interface GreeterServer extends grpc.UntypedServiceImplementation {

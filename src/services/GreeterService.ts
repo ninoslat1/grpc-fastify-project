@@ -12,8 +12,8 @@ export class GreeterService {
   }
 
   sayFullname(request: FullnameHelloRequest): HelloReply {
-    const { firstName, lastName } = request;
-    const fullname = `${firstName} ${lastName}`.trim();
+    const { first_name, last_name } = request;
+    const fullname = `${first_name} ${last_name}`.trim();
     return { message: `Hello, ${fullname}!` };
   }
 }

@@ -1,5 +1,6 @@
 import grpc from "@grpc/grpc-js";
-import { GrpcServiceRegistry } from "./GrpcServiceRegistry.js";
+import { GrpcServiceRegistry } from "./GrpcServiceRegistry";
+import { logger } from "../logger/logger";
 
 export class GrpcServer {
   private server: grpc.Server;
@@ -24,8 +25,8 @@ export class GrpcServer {
           if (err) {
             reject(err);
           } else {
-            console.log(`gRPC server running at ${this.address}`);
-            console.log(`Registered services: ${this.registry.getRegisteredServices().join(", ")}`);
+            logger.info(`gRPC server running at ${this.address}`);
+            logger.info(`Registered services: ${this.registry.getRegisteredServices().join(", ")}`);
             resolve();
           }
         }
